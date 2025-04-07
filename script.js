@@ -1,49 +1,38 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const heartContainer = document.getElementById('heartContainer');
-    const letter = document.getElementById('letter');
-    const openBtn = document.getElementById('openBtn');
-    const closeBtn = document.getElementById('closeBtn');
-    const closeLetterBtn = document.getElementById('closeLetterBtn');
-    const closedLetter = document.getElementById('closedLetter');
-    const openedLetter = document.getElementById('openedLetter');
+    const heartContainer = document.querySelector('.main-heart-container');
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
     
-    // Mostrar carta ao clicar no coração principal
-    heartContainer.addEventListener('click', function() {
-        openLetter();
+    // Efeito de pulsação extra ao passar o mouse no coração
+    heartContainer.addEventListener('mouseenter', function() {
+        this.style.transform = 'scale(1.1)';
     });
     
-    // Abrir carta
-    openBtn.addEventListener('click', function() {
-        closedLetter.classList.remove('active');
-        openedLetter.classList.add('active');
+    heartContainer.addEventListener('mouseleave', function() {
+        this.style.transform = 'scale(1)';
     });
     
-    // Fechar carta (botão dentro da carta)
-    closeBtn.addEventListener('click', closeLetter);
+    // Efeito para o botão SIM
+    yesBtn.addEventListener('click', function() {
+        alert('💖 Ebaaa! Você fez meu coração feliz! 💖\n\nAgora somos Valentines!');
+        // Efeito de explosão de corações
+        createHeartRain();
+    });
     
-    // Fechar carta (botão X no cabeçalho)
-    closeLetterBtn.addEventListener('click', closeLetter);
+    // Efeito divertido para o botão NÃO
+    noBtn.addEventListener('mouseover', function() {
+        // Faz o botão fugir do cursor
+        const x = Math.random() * window.innerWidth * 0.7;
+        const y = Math.random() * window.innerHeight * 0.7;
+        this.style.position = 'absolute';
+        this.style.left = x + 'px';
+        this.style.top = y + 'px';
+    });
     
-    // Função para abrir a carta
-    function openLetter() {
-        letter.style.display = 'block';
-        setTimeout(() => {
-            letter.classList.add('show');
-            closedLetter.classList.add('active');
-        }, 10);
-    }
-    
-    // Função para fechar a carta
-    function closeLetter() {
-        letter.classList.remove('show');
-        openedLetter.classList.remove('active');
-        closedLetter.classList.remove('active');
-        
-        // Resetar após a animação terminar
-        setTimeout(() => {
-            letter.style.display = 'none';
-        }, 500);
-    }
+    noBtn.addEventListener('click', function() {
+        alert('😉 Eu sabia que você ia dizer SIM no final!\nVou considerar isso como um "SIM" disfarçado!');
+        createHeartRain();
+    });
     
     // Adicionar mais camadas de sombra para efeito melhorado
     for (let i = 0; i < 3; i++) {
@@ -53,4 +42,45 @@ document.addEventListener('DOMContentLoaded', function() {
         shadow.style.opacity = 0.3 - (i * 0.1);
         heartContainer.appendChild(shadow);
     }
+    
+    // Função para criar chuva de corações
+    function createHeartRain() {
+        const colors = ['#e91e63', '#f48fb1', '#ffeb3b', '#4caf50', '#2196f3'];
+        
+        for (let i = 0; i < 50; i++) {
+            setTimeout(() => {
+                const heart = document.createElement('div');
+                heart.className = 'falling-heart';
+                heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+                document.body.appendChild(heart);
+                
+                setTimeout(() => {
+                    heart.remove();
+                }, 5000);
+            }, i * 100);
+        }
+    }
 });
+
+// Estilo dinâmico para corações caindo (adicionado via JS para não precisar editar o CSS)
+document.head.insertAdjacentHTML('beforeend', `
+    <style>
+        .falling-heart {
+            position: fixed;
+            top: -50px;
+            z-index: 100;
+            animation: falling linear forwards;
+            pointer-events: none;
+        }
+        
+        @keyframes falling {
+            to {
+                transform: translateY(100vh);
+            }
+        }
+    </style>
+`);
